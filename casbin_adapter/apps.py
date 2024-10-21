@@ -15,4 +15,11 @@ class CasbinAdapterConfig(AppConfig):
     name = "casbin_adapter"
 
     def ready(self):
-        asyncio.create_task(setup())
+        try:
+            asyncio.create_task(setup())
+        except RuntimeError:
+            # running dev server
+            import warnings
+
+            warnings.filterwarnings("ignore", category=RuntimeWarning, module="pygments")
+            asyncio.run(setup())
